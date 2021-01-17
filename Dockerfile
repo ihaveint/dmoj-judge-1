@@ -1,8 +1,8 @@
 FROM archlinux
 
-ENV JUDGE_NAME='judger'
-ENV JUDGE_KEY='The_key_you_set_in_admin_paneL'
-ENV JUDGE_SITE='site'
+ENV JUDGE_NAME='<JUDGE_NAME>'
+ENV JUDGE_KEY='<JUDGE_KEY>'
+ENV JUDGE_SITE='<JUDGE_SITE>'
 
 RUN pacman-key --init && \
     pacman-key --populate && \
@@ -11,10 +11,22 @@ RUN pacman-key --init && \
     locale-gen
 
 # Extra language configurations. Choose what you want.
-RUN pacman -S --noconfirm \
-      ghc lua clang julia nodejs coffeescript scala crystal rust \
+
+RUN pacman -Syu
+
+RUN pacman -Syu --noconfirm \
+      ghc lua clang nodejs coffeescript scala crystal rust \
       pypy pypy3 racket ruby2.6 swi-prolog gcc-ada gnucobol dmd gcc-fortran \
       dart go groovy fpc php ocaml jdk8-openjdk jdk11-openjdk
+
+RUN pacman -Syu --noconfirm wget
+
+# julia installation with pacman doesn't work right now ... investigate it later
+RUN wget https://julialang-s3.julialang.org/bin/linux/x64/1.5/julia-1.5.2-linux-x86_64.tar.gz
+RUN tar -xvzf julia-1.5.2-linux-x86_64.tar.gz
+RUN cp -r julia-1.5.2 /opt/
+RUN ln -s /opt/julia-1.5.2/bin/julia /usr/local/bin/julia
+
 
 WORKDIR /judge
 
